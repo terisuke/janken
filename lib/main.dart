@@ -29,7 +29,6 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
-  
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -37,30 +36,24 @@ class _MyHomePageState extends State<MyHomePage> {
   Hand? computerHand;
   Result? result;
 
-  void chooseComputerText(){
-      final random = Random();
-      final randomNumber = random.nextInt(3);
-      final hand = Hand.values[randomNumber];
-      setState(() {
-        computerHand = hand;
-      });
-      decideResult();
-    }
-  
-  void decideResult(){
-    if(myHand == null || computerHand == null){
+  void chooseComputerText() {
+    final random = Random();
+    final randomNumber = random.nextInt(3);
+    final hand = Hand.values[randomNumber];
+    setState(() {
+      computerHand = hand;
+    });
+    decideResult();
+  }
+
+  void decideResult() {
+    if (myHand == null || computerHand == null) {
       return;
     }
     final Result result;
-    if(myHand == computerHand){
-      result = Result.draw;
-    }else if(myHand == Hand.rock && computerHand == Hand.scissors){
+    if (myHand == computerHand) {
       result = Result.win;
-    }else if(myHand == Hand.scissors && computerHand == Hand.paper){
-      result = Result.win;
-    }else if(myHand == Hand.paper && computerHand == Hand.rock){
-      result = Result.win;
-    }else{
+    } else {
       result = Result.lose;
     }
     setState(() {
@@ -68,12 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    
-    
-    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
@@ -83,13 +72,22 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('相手️',
-            style: TextStyle(fontSize: 30),
-            ),
             Text(
-              computerHand?.text ?? '?',
-              style: TextStyle(fontSize: 150),
+              '相手️',
+              style: TextStyle(fontSize: 30),
             ),
+            if (computerHand != null) // computerHandがnullでない場合のみ画像を表示
+              Image.asset(
+                'assets/${computerHand!.imageName}.jpeg', // computerHandに応じた画像を選択
+                width: 150, // 画像のサイズを指定
+                height: 150,
+              )
+            else
+              Text(
+                '?',
+                style: TextStyle(fontSize: 150),
+              ),
+            // ここまで変更
             SizedBox(
               height: 50,
             ),
@@ -101,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 50,
             ),
             Text(
-              myHand?.text ?? '?',
+              myHand?.emoji ?? '?',
               style: TextStyle(fontSize: 150),
             ),
           ],
@@ -111,85 +109,117 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FloatingActionButton(
-            onPressed:(){
+            onPressed: () {
               setState(() {
-                myHand = Hand.rock;
+                myHand = Hand.up;
               });
               chooseComputerText();
             },
             tooltip: 'Increment',
             child: const Text(
-              '✊',
+              '👆',
               style: TextStyle(fontSize: 30),
             ),
           ),
           const SizedBox(
             width: 16,
-            ),
+          ),
           FloatingActionButton(
-            onPressed: (){
+            onPressed: () {
               setState(() {
-                myHand = Hand.scissors;
+                myHand = Hand.down;
               });
               chooseComputerText();
             },
             tooltip: 'Increment',
             child: const Text(
-              '✌️',
+              '👇',
               style: TextStyle(fontSize: 30),
             ),
           ),
           const SizedBox(
             width: 16,
-            ),
+          ),
           FloatingActionButton(
-            onPressed: (){
+            onPressed: () {
               setState(() {
-                myHand = Hand.paper;
+                myHand = Hand.right;
               });
               chooseComputerText();
             },
             tooltip: 'Increment',
             child: const Text(
-              '✋',
+              '👉',
+              style: TextStyle(fontSize: 30),
+            ),
+          ),
+          const SizedBox(
+            width: 16,
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                myHand = Hand.left;
+              });
+              chooseComputerText();
+            },
+            tooltip: 'Increment',
+            child: const Text(
+              '👈',
               style: TextStyle(fontSize: 30),
             ),
           ),
         ],
-          ),
-        
-
+      ),
     );
   }
 }
-enum Hand{
-  rock,
-  scissors,
-  paper;
-  String get text{
-    switch(this){
-      case Hand.rock:
-        return '✊';
-      case Hand.scissors:
-        return '✌️';
-      case Hand.paper:
-        return '✋';
+
+enum Hand {
+  up,
+  down,
+  left,
+  right;
+
+  // 画像ファイル名を返すプロパティ
+  String get imageName {
+    switch (this) {
+      case Hand.up:
+        return 'up';
+      case Hand.down:
+        return 'down';
+      case Hand.left:
+        return 'left';
+      case Hand.right:
+        return 'right';
+    }
+  }
+
+  // 絵文字を返すプロパティ
+  String get emoji {
+    switch (this) {
+      case Hand.up:
+        return '👆';
+      case Hand.down:
+        return '👇';
+      case Hand.left:
+        return '👈';
+      case Hand.right:
+        return '👉';
     }
   }
 }
-enum Result{
+
+enum Result {
   win,
-  lose,
-  draw;
-  String get text{
-    switch(this){
+  lose;
+
+  String get text {
+    switch (this) {
       case Result.win:
         return '勝ち';
       case Result.lose:
         return '負け';
-      case Result.draw:
-        return 'あいこ';
     }
   }
 }
-
